@@ -26,6 +26,7 @@ Liste des Formations
 <td th:text="${p.typeFormation}"></td>
 <td th:text="${p.prixFormation}"></td>
 <td th:text="${p.dateFormation}"></td>
+<td><a class="btn btn-success" th:href="@{modifierFormation(id=${p.idFormation})}">Editer</a></td>
 <td><a class="btn btn-danger" onclick="return confirm('Etes-vous sûr ?')" 
 		th:href="@{supprimerFormation(id=${p.idFormation}, page=${currentPage},size=${size})}">Supprimer</a></td>
 </tr>

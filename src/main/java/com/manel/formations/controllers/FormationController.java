@@ -5,10 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,25 +26,36 @@ public class FormationController {
 	FormationService formationService;
 	
 	@RequestMapping("/showCreate")
-	public String showCreate()
+	public String showCreate(ModelMap modelMap)
 	{
-	return "createFormation";
+		modelMap.addAttribute("formation", new Formation());
+		modelMap.addAttribute("mode", "new");
+		return "formFormation";
+	}
+	
+	@RequestMapping("/saveFormation")
+	public String saveFormationsaveFormation(@Valid Formation formation,
+										BindingResult bindingResult)
+	{
+	if (bindingResult.hasErrors()) return "formFormation";
+	formationService.saveFormation(formation);
+	return "formFormation";
 	}
 
-	@RequestMapping("/saveFormation")
-	public String saveFormation(@ModelAttribute("formation") Formation formation,
-	@RequestParam("date") String date,
-	ModelMap modelMap) throws ParseException
-	{
-	
-	SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-	Date dateFormation = dateformat.parse(String.valueOf(date)); 
-	formation.setDateFormation(dateFormation);
-	Formation saveFormation = formationService.saveFormation(formation);
-	String msg ="formation enregistré avec Id "+saveFormation.getIdFormation();
-	modelMap.addAttribute("msg", msg);
-	return "createFormation";
-	}
+//	@RequestMapping("/saveFormation")
+//	public String saveFormation(@ModelAttribute("formation") Formation formation,
+//								@RequestParam("date") String date,
+//								ModelMap modelMap) throws ParseException
+//	{
+//	
+//	SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+//	Date dateFormation = dateformat.parse(String.valueOf(date)); 
+//	formation.setDateFormation(dateFormation);
+//	Formation saveFormation = formationService.saveFormation(formation);
+//	String msg ="formation enregistré avec Id "+saveFormation.getIdFormation();
+//	modelMap.addAttribute("msg", msg);
+//	return "createFormation";
+//	}
 	
 	
 	
@@ -84,7 +98,8 @@ public class FormationController {
 	{
 	Formation f= formationService.getFormation(id);
 	modelMap.addAttribute("formation", f);
-	return "editerFormation";
+	modelMap.addAttribute("mode", "edit");
+	return "formFormation";
 	}
 	@RequestMapping("/updateFormation")
 	public String updateFormation(@ModelAttribute("formation") Formation formation,
